@@ -1,0 +1,1 @@
+Los archivos en cuestión son el proyecto base que se proyecta a mejorar, para el año 2024 fue diseñado por lo que cualquier diferencia con la actualidad es posible. Diseñado con metodología RUP, si esta viendo la versión subida el dia 21/05/2025 esta viendo la versión base de este proyecto que, tiene por mejorar.

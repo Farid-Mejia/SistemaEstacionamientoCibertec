@@ -1,0 +1,221 @@
+CREATE DATABASE BDRegistroIngresoSalida;
+USE BDRegistroIngresoSalida;
+
+CREATE TABLE Usuario (
+    dni CHAR(8) PRIMARY KEY
+);
+
+CREATE TABLE Estacionamiento (
+    NumEstacionamiento INT PRIMARY KEY,
+    Estado VARCHAR(50),
+    Tipo VARCHAR(50),
+    nivelSotano INT
+);
+
+CREATE TABLE Vehiculo (
+    placa CHAR(6) PRIMARY KEY
+);
+
+CREATE TABLE RegistroDeEntradaYSalida (
+    idRegistro INT PRIMARY KEY AUTO_INCREMENT,
+    horaIngreso DATETIME,
+    horaSalida DATETIME,
+    dni CHAR(8),
+    placa CHAR(6),
+    NumEstacionamiento INT,	
+    FOREIGN KEY (dni) REFERENCES Usuario(dni),
+    FOREIGN KEY (placa) REFERENCES Vehiculo(placa),
+    FOREIGN KEY (NumEstacionamiento) REFERENCES Estacionamiento(NumEstacionamiento)
+);
+
+INSERT INTO Usuario (dni) VALUES ('12345678');
+INSERT INTO Usuario (dni) VALUES ('72149061');
+INSERT INTO Usuario (dni) VALUES ('34567890');
+INSERT INTO Usuario (dni) VALUES ('45678901');
+INSERT INTO Usuario (dni) VALUES ('56789012');
+INSERT INTO Usuario (dni) VALUES ('67890123');
+INSERT INTO Usuario (dni) VALUES ('78901234');
+INSERT INTO Usuario (dni) VALUES ('89012345');
+INSERT INTO Usuario (dni) VALUES ('90123456');
+INSERT INTO Usuario (dni) VALUES ('01234567');
+INSERT INTO Usuario (dni) VALUES ('45023284');
+
+
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (1, 'Libre', 'Discapacitados', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (2, 'Libre', 'Normal', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (3, 'Libre', 'Normal', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (4, 'Libre', 'Discapacitados', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (11, 'Libre', 'Normal', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (12, 'Libre', 'Normal', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (13, 'Libre', 'Normal', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (14, 'Libre', 'Normal', 1);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (15, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (16, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (17, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (18, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (19, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (20, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (21, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (22, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (23, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (24, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (25, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (26, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (27, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (28, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (29, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (30, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (31, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (32, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (33, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (34, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (35, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (36, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (37, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (38, 'Libre', 'Normal', 2);
+INSERT INTO Estacionamiento (NumEstacionamiento, Estado, Tipo, nivelSotano) VALUES (39, 'Libre', 'Normal', 2);
+
+DELIMITER //
+
+-- Procedimiento 1: Verificar si el DNI existe y no hay un registro sin salida
+CREATE PROCEDURE VerificarDNI(IN p_dni CHAR(8))
+BEGIN
+    DECLARE v_count INT;
+    DECLARE v_active_record INT;
+
+    -- Verificar si el DNI existe
+    SELECT COUNT(*) INTO v_count
+    FROM Usuario
+    WHERE dni = p_dni;
+
+    -- Verificar si hay un registro sin salida para el DNI
+    SELECT COUNT(*) INTO v_active_record
+    FROM RegistroDeEntradaYSalida
+    WHERE dni = p_dni AND horaSalida IS NULL;
+
+    IF v_count > 0 AND v_active_record = 0 THEN
+        SELECT 'Existe' AS mensaje;
+    ELSE
+        SELECT 'No existe o tiene un registro sin salida' AS mensaje;
+    END IF;
+END //
+
+-- Procedimiento 2: Registrar ingreso
+//
+
+CREATE PROCEDURE RegistrarIngreso(
+    IN p_dni CHAR(8),
+    IN p_placa CHAR(6),
+    IN p_NumEstacionamiento INT
+)
+BEGIN
+    DECLARE v_count INT;
+    DECLARE v_estacionamiento_estado VARCHAR(50);
+    DECLARE v_user_exists INT;
+    DECLARE v_placa_exists INT;
+
+    -- Verificar si el DNI existe
+    SELECT COUNT(*) INTO v_user_exists
+    FROM Usuario
+    WHERE dni = p_dni;
+
+    -- Verificar si la placa existe
+    SELECT COUNT(*) INTO v_placa_exists
+    FROM Vehiculo
+    WHERE placa = p_placa;
+
+    -- Si la placa no existe, insertarla
+    IF v_placa_exists = 0 THEN
+        INSERT INTO Vehiculo (placa) VALUES (p_placa);
+    END IF;
+
+    -- Verificar si el DNI existe y no tiene un registro sin salida
+    SELECT COUNT(*) INTO v_count
+    FROM RegistroDeEntradaYSalida
+    WHERE dni = p_dni AND horaSalida IS NULL;
+
+    -- Verificar si el estacionamiento está libre
+    SELECT Estado INTO v_estacionamiento_estado
+    FROM Estacionamiento
+    WHERE NumEstacionamiento = p_NumEstacionamiento;
+
+    IF v_user_exists > 0 AND v_count = 0 THEN
+        IF v_estacionamiento_estado = 'Libre' THEN
+            -- Insertar registro de ingreso
+            INSERT INTO RegistroDeEntradaYSalida (horaIngreso, horaSalida, dni, placa, NumEstacionamiento)
+            VALUES (NOW(), NULL, p_dni, p_placa, p_NumEstacionamiento);
+
+            -- Actualizar el estado del estacionamiento a "Ocupado"
+            UPDATE Estacionamiento
+            SET Estado = 'Ocupado'
+            WHERE NumEstacionamiento = p_NumEstacionamiento;
+
+            SELECT 'Ingreso registrado' AS mensaje;
+        ELSE
+            SELECT 'Error: Estacionamiento ocupado o no existe' AS mensaje;
+        END IF;
+    ELSE
+        SELECT 'Error: Usuario no existe o ya tiene un registro sin salida' AS mensaje;
+    END IF;
+END //
+
+-- Procedimiento 3: Mostrar placa de un registro sin salida para un DNI
+CREATE PROCEDURE MostrarPlaca(IN p_dni CHAR(8))
+BEGIN
+    DECLARE v_placa CHAR(6);
+
+    -- Verificar si hay un registro sin salida para el DNI
+    SELECT placa INTO v_placa
+    FROM RegistroDeEntradaYSalida
+    WHERE dni = p_dni AND horaSalida IS NULL;
+
+    IF v_placa IS NOT NULL THEN
+        SELECT v_placa AS Placa;
+    ELSE
+        SELECT 'Error: No existe registro activo para el DNI' AS mensaje;
+    END IF;
+END //
+
+-- Procedimiento 4: Registrar salida
+CREATE PROCEDURE RegistrarSalida(IN p_dni CHAR(8))
+BEGIN
+    DECLARE v_NumEstacionamiento INT;
+
+    -- Verificar si hay un registro sin salida para el DNI
+    SELECT NumEstacionamiento INTO v_NumEstacionamiento
+    FROM RegistroDeEntradaYSalida
+    WHERE dni = p_dni AND horaSalida IS NULL;
+
+    IF v_NumEstacionamiento IS NOT NULL THEN
+        -- Actualizar el registro con la hora de salida
+        UPDATE RegistroDeEntradaYSalida
+        SET horaSalida = NOW()
+        WHERE dni = p_dni AND horaSalida IS NULL;
+
+        -- Actualizar el estado del estacionamiento a "Libre"
+        UPDATE Estacionamiento
+        SET Estado = 'Libre'
+        WHERE NumEstacionamiento = v_NumEstacionamiento;
+
+        SELECT 'Salida registrada' AS mensaje;
+    ELSE
+        SELECT 'Error: No existe registro activo para el DNI' AS mensaje;
+    END IF;
+END //
+
+-- Procedimiento 5: Lista de estacionamientos ocupados
+CREATE PROCEDURE EstacionamientosOcupados()
+BEGIN
+    SELECT NumEstacionamiento
+    FROM Estacionamiento
+    WHERE Estado = 	'Ocupado';
+END //
+
+DELIMITER ;
+
+-- ejecucion de cada uno
+CALL VerificarDNI('12345678');
+CALL RegistrarIngreso('12345678', 'ABC123', 2);
+CALL MostrarPlaca('12345678');
+CALL RegistrarSalida('12345678');
+CALL EstacionamientosOcupados();

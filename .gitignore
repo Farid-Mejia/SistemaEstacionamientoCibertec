@@ -1,0 +1,49 @@
+# Ignorar comentarios y líneas en blanco
+
+# Archivos y carpetas de Eclipse/Spring Tool Suite
+.metadata/
+RemoteSystemsTempFiles/
+.settings/
+.project
+.classpath
+target/
+bin/
+tmp/
+
+# Archivos de configuración de Servidores dentro de Eclipse
+# Esto es para la carpeta "Servers" que Eclipse crea DENTRO del workspace,
+# no para un servidor Tomcat que hayas descargado por separado y quieras versionar (lo cual no es común)
+Servers/
+
+# Logs
+*.log
+logback.*.xml
+
+# Archivos generados por IBM Rational (ajustar si es necesario)
+# Si estos archivos son parte del diseño y no configuraciones locales, considera no ignorarlos.
+# Si son específicos de tu máquina o generados, ignóralos.
+# *.rpwx
+# *.rpyx
+# *_rpy/
+# profiles/
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de IDEs comunes (opcional, por si cambias de IDE)
+# Para IntelliJ IDEA
+.idea/    
+# Para Visual Studio Code (puedes querer mantener algunas configuraciones de VSCode)
+.vscode/  
+# Para NetBeans
+nbproject/ 
+
+
+# Archivos temporales comunes
+*.tmp
+*~
+
+# Si tienes una copia completa de Tomcat dentro de tu proyecto y NO quieres subirla:
+# Descomenta la siguiente línea si la carpeta "apache-tomcat-9.0.17" está dentro de tu proyecto y no la quieres en Git
+# apache-tomcat-9.0.17/
